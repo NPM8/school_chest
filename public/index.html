@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gra</title>
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+    <script src="/three.js"></script>
+    <script src="/Net.js"></script>
+    <script src="/Game.js"></script>
+    <script src="/Ui.js"></script>
+    <script src="/Main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="overlay">
+        <div id="text">
+            <div id="info"></div>
+            <input type="text" name="userName" id="name">
+            <input type="button" value="login" id="login">
+            <input type="button" value="reset" id="reset">
+        </div>
+    </div>
+    <div id="resoult">
+
+    </div>
+    <select name="ala" id="ala">
+        <option value="f">FRONT</option>
+        <option value="b">BACK</option>
+        <option value="s">SIDE</option>
+        <option value="t">TOP</option>
+    </select>
+    <div id="root"></div>
+</body>
+</html>
