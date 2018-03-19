@@ -1,43 +1,39 @@
-
 /*
     obsługa komunikację Ajax - serwer
 */
 
 class Net {
 
-    constructor (props) {
+    constructor(props) {
 
     }
-    /*
-        funkcja publiczna możliwa do uruchomienia 
-        z innych klas
-    */
-    async sendData  (data) {
+
+    async sendData(data) {
         let ala;
-        console.log("ala")
-         await $.ajax({
+        await $.ajax({
             type: "POST",
             url: "/api/login",
             data: data,
             success: (data) => {
                 let tmp = JSON.parse(data);
-                // switch (tmp.res) {
-                //     case "added":
-                        
-                //         break;
-                //     case "tooManyUsers":
-                //         break;
-                //     case "userExist":
-                        
-                //         break;
-                //     default:
-                //          console.log(tmp.res)
-                //         break;
-                // }
-                ala =  tmp.res;
+                console.log(tmp);
+                ala = tmp;
             }
-
-        })
-        return ala
+        });
+        return ala;
+    }
+    async sendDataWait() {
+        let ala;
+        await $.ajax({
+            type: "POST",
+            url: "/api/is_logged",
+            data: "",
+            success: (data) => {
+                let tmp = JSON.parse(data);
+                console.log(tmp);
+                ala = tmp;
+            }
+        });
+        return ala;
     }
 }

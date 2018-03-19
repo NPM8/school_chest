@@ -1,48 +1,62 @@
-
 /*
     UI - obsługa interfejsu użytkownika
 */
 
 class Ui {
-    constructor () {
+    constructor() {
         this.select = $("#ala");
-        this.select.on("change", (e) => { this.handleSelectChange(e)})
+        this.select.on("change", (e) => {
+            this.handleSelectChange(e)
+        })
     }
 
     handleSelectChange(e) {
         let value = this.select.val(), val2;
         console.log(this.select)
-        switch(value) {
+        switch (value) {
             case "f":
-                val2 = {x: 0, y: 200, z: 1000 }
+                val2 = {x: 0, y: 200, z: 1000}
                 break;
             case "b":
-                val2 = {x: 0, y: 200, z: -1000 }
+                val2 = {x: 0, y: 200, z: -1000}
                 break;
         }
-        game.position = val2; 
+        game.position = val2;
     }
 
-     async handleNameAdd(e) {
+    async handleNameAdd(e) {
         let value = $("#name").val();
         let todo = await net.sendData({action: e.target.value, user: value});
-        switch (todo) {
+        switch (todo.res) {
             case "added":
                 $('#overlay').css("display", "none")
                 $('#resoult').css("display", "block")
-                $('#resoult').html("Grasz jako: " + value)
+                $('#resoult').html("Grasz jako: " + value + ' grasz kolorem ' + todo.type);
+                game.handlePlayerColor(todo.type);
+                $('#wait').css("display", "block");
+                this.tmpInterval = setInterval(async () => {
+                    let tmp = await net.sendDataWait();
+                    console.log(tmp);
+                    if(tmp.res == "logged") {
+                        $('#wait').css("display", "none");
+                        clearInterval(this.tmpInterval);
+                        game.initRaycaster();
+
+                    }
+                },500);
                 break;
             case "tooManyUsers":
                 $("#info").html("Max liczba graczy")
                 break;
             case "userExist":
-                $("#info").html("Gracz o nicku "+ value+ " już istnieje")
+                $("#info").html("Gracz o nicku " + value + " już istnieje")
                 break;
             default:
                 console.log(todo)
                 break;
         }
     }
+
     // $("#bt1").on("click", function () {
     //     game.setTest($("#txt1").val());
     // })
