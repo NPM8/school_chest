@@ -308,7 +308,7 @@ class Game {
                     });
                     this.last = [];
                     this.handleUpdatePlan();
-                    net.
+                    ui.handleTurnCheck();
                     window.onmousedown = (e) => {
                         this.handleMouseDown(e)
                     };
@@ -327,12 +327,13 @@ class Game {
     handleOponentMove(data) {
         if(data != null && data != "") {
             console.log(data);
-            let elem = this.pions[data.from.y][data.from.x]
-            this.pions[data.to.y][data.to.x] = elem;
-            this.plan[data.to.y][data.to.x] = elem_2
+            let elem = this.pions[data['from[y]']][data['from[x]']]
+            this.pions[data['to[y]']][data['to[x]']] = elem;
+            let elem_2 = this.plan[data['to[y]']][data['to[x]']];
             elem.obj.position.x = elem_2.obj.position.x;
             elem.obj.position.z = elem_2.obj.position.z;
-            this.pions[coords.y][coords.x] = { type: 0 };
+            this.pions[data['from[y]']][data['from[x]']] = { type: 0 };
+            ui.genInfo();
         }
     }
 

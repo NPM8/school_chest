@@ -12,6 +12,24 @@ class Ui {
         this.name;
     }
 
+    genInfo() {
+        let info = document.getElementById("information");
+        let table = document.createElement("table");
+        game.pions.forEach(value => {
+           let row = document.createElement("tr");
+           value.forEach(val => {
+              let td = document.createElement("td");
+              td.innerText = val.type;
+              row.append(td);
+           });
+           table.append(row);
+        });
+        while (info.firstChild) {
+            info.removeChild(info.firstChild);
+        }
+        info.append(table);
+    }
+
     handleSelectChange(e) {
         let value = this.select.val(), val2;
         console.log(this.select)
