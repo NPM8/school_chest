@@ -11,6 +11,8 @@ class Game {
         this.height = props.height;
         this.plan = [];
         this.last = [];
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
         for (let i = 0; i < 8; i++) {
             this.plan.push([]);
             for (let a = 0; a < 8; a++) {
@@ -295,6 +297,7 @@ class Game {
                     }
                 }));
                 if (elem_2.type == 3) {
+                    net.sendDataChange({from: {x: coords.x, y: coords.y}, to: {x: coords_2.x, y: coords_2.y}});
                     this.pions[coords_2.y][coords_2.x] = elem;
                     elem.obj.position.x = elem_2.obj.position.x;
                     elem.obj.position.z = elem_2.obj.position.z;
@@ -305,6 +308,7 @@ class Game {
                     });
                     this.last = [];
                     this.handleUpdatePlan();
+                    net.
                     window.onmousedown = (e) => {
                         this.handleMouseDown(e)
                     };
@@ -315,11 +319,24 @@ class Game {
     }
 
     initRaycaster() {
-        this.raycaster = new THREE.Raycaster();
-        this.mouse = new THREE.Vector2();
         window.onmousedown = (e) => {
             this.handleMouseDown(e)
         };
     }
 
+    handleOponentMove(data) {
+        if(data != null && data != "") {
+            console.log(data);
+            let elem = this.pions[data.from.y][data.from.x]
+            this.pions[data.to.y][data.to.x] = elem;
+            this.plan[data.to.y][data.to.x] = elem_2
+            elem.obj.position.x = elem_2.obj.position.x;
+            elem.obj.position.z = elem_2.obj.position.z;
+            this.pions[coords.y][coords.x] = { type: 0 };
+        }
+    }
+
+    disableRaycaster() {
+        window.onmousedown = null;
+    }
 }

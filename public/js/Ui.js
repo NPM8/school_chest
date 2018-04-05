@@ -8,6 +8,8 @@ class Ui {
         this.select.on("change", (e) => {
             this.handleSelectChange(e)
         })
+        this.handleTurnCheck = this.handleTurnCheck.bind(this);
+        this.name;
     }
 
     handleSelectChange(e) {
@@ -26,6 +28,7 @@ class Ui {
 
     async handleNameAdd(e) {
         let value = $("#name").val();
+        this.name = value;
         let todo = await net.sendData({action: e.target.value, user: value});
         switch (todo.res) {
             case "added":
@@ -37,13 +40,13 @@ class Ui {
                 this.tmpInterval = setInterval(async () => {
                     let tmp = await net.sendDataWait();
                     console.log(tmp);
-                    if(tmp.res == "logged") {
-                        $('#wait').css("display", "none");
+                    if (tmp.res == "logged") {
+
                         clearInterval(this.tmpInterval);
-                        game.initRaycaster();
+                        this.handleTurnCheck();
 
                     }
-                },500);
+                }, 500);
                 break;
             case "tooManyUsers":
                 $("#info").html("Max liczba graczy")
@@ -56,7 +59,27 @@ class Ui {
                 break;
         }
     }
+    async   handleTurnCheck()
+    {
+        let tmpTurn = await net.requestMyTurn({name: this.name});
+        if(tmpTurn.res) {
+            console.log(tmpTurn.res);
+            try {
+                clearInterval(this.tmpInterval);
+            } catch (e) {
 
+            }
+            $('#wait').css("display", "none");
+            game.handleOponentMove(tmpTurn.lastMove);
+            game.initRaycaster();
+        } else {
+            console.log(tmpTurn.res, "false");
+            if ($('#wait').css("display") == "none" )
+                $('#wait').css("display", "block");
+            game.disableRaycaster();
+            setTimeout(this.handleTurnCheck, 500);
+        }
+    }
     // $("#bt1").on("click", function () {
     //     game.setTest($("#txt1").val());
     // })

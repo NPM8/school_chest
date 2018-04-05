@@ -1,6 +1,6 @@
 var game;
 var net;
-var ui;
+var ui, name;
 
 $(document).ready(function () {
     game = new Game({width: $("#root").width(), height: $("#root").height(), pos: {x: 0, y: 300, z: 1000}});

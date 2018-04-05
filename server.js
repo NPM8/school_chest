@@ -2,13 +2,13 @@ const fs = require('fs'),
     http = require("http");
 var qs = require("querystring");
 
-let tab = [];
+let tab = [], turn = "white", lastMove = null;
 
 function adduser(user) {
     if (tab.length == 2) {
         return {res: "tooManyUsers"};
     } else if (tab.indexOf(user) == -1) {
-        tab.push(user);
+        tab.push({name: user, color: (tab.length == 1) ? "white" : "black"});
         return {res: "added", type: (tab.length == 1) ? "white" : "black"};
     } else {
         return {res: "userExist"};
@@ -182,6 +182,52 @@ var server = http.createServer(function (req, res) {
                    console.log("not");
                    res.end(JSON.stringify({res: "not"}))
                }
+            });
+            break;
+        case "/api/is_my_turn":
+            var allData = "";
+
+            //kiedy przychodzą dane POSTEM, w postaci pakietów,
+            //łącza się po kolei do jednej zmiennej "allData"
+            // w poniższej funkcji nic nie modyfikujemy
+
+            req.on("data", function (data) {
+                console.log("data: " + data)
+                allData += data;
+            });
+
+            req.on("end", (data) => {
+                var finishObj = qs.parse(allData);
+                // console.log(finishObj);
+                console.log(tab);
+                let tmp = tab.find(value => {
+                    if(value.name === finishObj.name)
+                        return value;
+                    else
+                        return false;
+                });
+                console.log(tmp, turn);
+               if(tmp.color === turn) {
+                   res.end(JSON.stringify({res: true, lastMove: lastMove}))
+               } else {
+                   res.end(JSON.stringify({res: false}))
+               }
+            });
+            break;
+        case "/api/move":
+            var allData = "";
+
+            req.on("data", function (data) {
+                console.log("data: " + data)
+                allData += data;
+            });
+
+            req.on("end", (data) => {
+                var finishObj = qs.parse(allData);
+                console.log(finishObj);
+                lastMove = finishObj;
+                turn = (turn == "black") ? "white" : "black";
+                res.end(JSON.stringify({res: "done"}));
             });
             break;
         default:
